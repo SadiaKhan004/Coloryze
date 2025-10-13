@@ -1,0 +1,75 @@
+# fastapi
+# uvicorn
+# pydantic
+# opencv-python
+# python-dotenv
+# supabase
+
+
+# --- 1. Application Layer (Web Framework & Async Tasks) ---
+# FastAPI: High-performance, modern, web framework
+fastapi
+# Uvicorn: The ASGI server to run FastAPI
+uvicorn
+
+# Pydantic: For data validation, settings management (used by FastAPI)
+pydantic
+pydantic-settings
+
+# AnyIO: For asynchronous task management (Async Task - Thread/AsyncIO)
+# Often used implicitly by FastAPI/Starlette, but good to include if explicitly managing threads/async
+anyio
+
+# --- 2. AI / Business Logic Layer (Models, Analysis, & Agents) ---
+
+# Image Analysis (Extract Skin Tones) & Try-on Model (Computer Vision)
+# OpenCV: Standard library for computer vision tasks
+opencv-python
+# Pillow: For basic image handling and manipulation
+##  Pillow
+
+# GenAI (Generative AI Component)
+# If using Google's Gemini API for GenAI:
+##   google-genai 
+# OR, if using a custom/local/other GenAI model:
+# (e.g., specific PyTorch/TensorFlow dependencies if it's a custom model)
+# torch
+# tensorflow
+
+# OpenAI Agent
+# Official library for interacting with OpenAI's models and Agents
+##  openai
+
+# --- 3. Data Access Layer (Database & Storage) ---
+
+# PostgreSQL (Pg) Database Access
+# Psycopg2-binary: PostgreSQL adapter for Python
+#psycopg2-binary
+# SQLAlchemy: Popular Python SQL Toolkit and ORM (Often used with FastAPI)
+#SQLAlchemy
+supabase
+
+# Async Database Operations (Essential for high-performance FastAPI)
+# AsyncPG: A high performance asynchronous PostgreSQL driver
+# asyncpg
+# OR (if using SQLAlchemy for async):
+# sqlalchemy[asyncio]
+
+# File Storage (Local Storage)
+# The image uploads need to be stored temporarily or permanently
+# aiofiles: For async file operations (non-blocking file I/O)
+aiofiles
+
+# --- 4. Utilities and Logging ---
+
+# Requests (or httpx): For making external HTTP requests (e.g., to the Try-n Model, external services)
+# httpx is recommended for asynchronous use with FastAPI
+#httpx
+# OR
+# requests 
+
+# Logging (Standard library, but often good to explicitly include a configuration handler if needed)
+# loguru
+
+# Configuration Management (for .env files)
+python-dotenv
