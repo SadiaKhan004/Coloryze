@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 :root {
@@ -68,4 +68,42 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* src/index.css (or your preferred CSS file) */
+
+.image-clip-left-curve-ellipse {
+  /* Clips the image into an ellipse shape */
+  clip-path: ellipse(100% 80% at 100% 40%);
+  /* * Explanation: 
+   * 100% 50%: Makes the ellipse the full width, but only half the height.
+   * at 100% 50%: Centers the ellipse on the right edge.
+   *
+   * To make the curve only on the left, we can use an inset rectangle with a rounded corner:
+   */
+
+  /* Alternative: Inset rectangle with a highly rounded left border */
+  /* This creates a concave curve on the left */
+  border-radius: -50% / -50%; /* Makes the entire element a large oval */
 }
+/* Add in your global CSS */
+.card-glow {
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 0 15px rgba(183, 122, 84, 0.25); /* warm glow */
+  transition: all 0.3s ease;
+}
+.card-glow:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 12px 25px rgba(0, 0, 0, 0.12),
+    0 0 20px rgba(183, 122, 84, 0.35);
+}
+
+
+/* For browsers that might still need it (though clip-path is widely supported now) */
+/* -webkit-clip-path: path("M 0 0 L 1000 0 L 1000 1000 L 0 1000 C 50 800 50 200 0 0 Z"); */
