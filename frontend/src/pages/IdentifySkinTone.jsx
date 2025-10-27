@@ -269,6 +269,7 @@ const IdentifySkinTone = () => {
                           body: JSON.stringify({ ai_result: aiResult }),
                         });
                         const data = await response.json();
+                        console.log("Fetched web pages:", data.results);
                         data.report = data.summary;  // alias
                         console.log("LLM Color Analysis Report:", data.report);
 
