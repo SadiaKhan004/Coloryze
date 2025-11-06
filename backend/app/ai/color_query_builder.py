@@ -1,38 +1,17 @@
-def build_color_queries(ai_result):
+
+def build_color_queries(ai_result=None):
     """
-    Build targeted web search queries for personal color analysis.
-    Focuses on fashion, beauty, and seasonal color systems only.
+    Queries optimized for reliable beauty/fashion websites.
     """
-
-    skin = ai_result.get("skin_tone", "").replace("MST ", "").lower().strip()
-    undertone = ai_result.get("undertone", "").lower().strip()
-    tone_group = ai_result.get("tone_group", "").lower().strip()
-    hair = ai_result.get("hair_color", "").lower().strip()
-    eye = ai_result.get("eye_color", "")
-
-    # Handle eye_color if it's a list (e.g. ["gray", "black"])
-    if isinstance(eye, list):
-        eye_str = " ".join([e.lower().strip() for e in eye])
-    else:
-        eye_str = eye.lower().strip()
-
-    # ✅ Simplified, more focused queries
     queries = [
-        # Seasonal color analysis (highly relevant)
-        f"{undertone} undertone seasonal color palette",
-        f"{tone_group} skin tone color season fashion",
-        
-        # Specific feature-based queries
-        f"{undertone} undertone {hair} hair best colors",
-        f"{eye_str} eyes {undertone} skin wardrobe colors",
-        
-        # General color analysis queries
-        f"personal color analysis {undertone} undertone guide",
-        f"{tone_group} complexion flattering colors makeup",
-        
-        # Seasonal system queries
-        f"spring summer autumn winter color palette {undertone}",
-        f"seasonal color theory {hair} hair {eye_str} eyes"
+        # Byrdie/Allure style queries
+        "skin undertones warm cool neutral how to determine fashion colors",
+        "eyeshadow color theory complementary colors for eye colors makeup",
+        "seasonal color analysis: personal palette spring summer autumn winter",
+        "clothing colors that flatter your skin tone wardrobe guide",
+        "jewelry for skin undertones gold vs silver which is better",
+        "hair color wardrobe colors that complement blonde brunette red black",
+        "colors to avoid for your skin tone fashion mistakes"
     ]
-
+    
     return queries

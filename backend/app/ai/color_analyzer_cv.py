@@ -17,7 +17,9 @@ def analyze_image(image_path: str):
     print(f"Analyzing image at {image_path}...")
 
     # Load pretrained face segmentation model
-    processor = AutoImageProcessor.from_pretrained("jonathandinu/face-parsing")
+    # processor = AutoImageProcessor.from_pretrained("jonathandinu/face-parsing")
+    processor = AutoImageProcessor.from_pretrained("nvidia/segformer-b0-finetuned-ade-512-512", use_fast=True)
+
     model = AutoModelForSemanticSegmentation.from_pretrained("jonathandinu/face-parsing")
 
     # ---------------------------
@@ -215,14 +217,101 @@ def analyze_image(image_path: str):
     right_eye_color = find_closest_color(right_eye_lab, iris_lab)
     hair_color = find_closest_color(hair_lab_val, hair_lab)
 
-    # Undertone detection
+    # # Undertone detection
+    # L, a, b = skin_lab
+    # if a > b + 2:
+    #     undertone = "Cool"
+    # elif b > a + 2:
+    #     undertone = "Warm"
+    # else:
+    #     undertone = "Neutral"
+    # Undertone detection (LAB-based + AJE alignment)
+    # Undertone detection (LAB-based + enhanced logic)
+    # after you compute skin_lab = [L, a, b]
+    # ---------------------------
+# Undertone detection (LAB-based + improved logic)
+# ---------------------------
+        # ---------------------------
+    # ⚙️ Improved Undertone Detection (v6 - Fully Integrated)
+    # ---------------------------
     L, a, b = skin_lab
-    if a > b + 2:
+    print(f"Debug - Skin LAB: L={L:.2f}, a={a:.2f}, b={b:.2f}")
+
+    # --- Step 1: Base interpretation ---
+    # LAB basics:
+    #  a < 0 → green; a > 0 → red/pink
+    #  b < 0 → blue;  b > 0 → yellow
+    if b < 0:
         undertone = "Cool"
-    elif b > a + 2:
+    elif b > 15 and a > 0:
         undertone = "Warm"
+    elif b > 10:
+        undertone = "Warm"
+    elif abs(b) < 8 and abs(a) < 8:
+        if a > b:
+            undertone = "Cool-Neutral"
+        elif b > a + 3:
+            undertone = "Warm-Neutral"
+        else:
+            undertone = "Neutral"
     else:
-        undertone = "Neutral"
+        if a / max(abs(b), 1) > 0.8 and b < 10:
+            undertone = "Cool"
+        elif b / max(abs(a), 1) > 1.5:
+            undertone = "Warm"
+        else:
+            undertone = "Neutral"
+
+    # --- Step 2: Adjust by MST (skin depth context) ---
+    if skin_level is not None:
+        if skin_level <= 3:  # Very light skin
+            if b > 12:
+                undertone = "Warm"
+            elif b < 8 and a > 3:
+                undertone = "Cool"
+            else:
+                undertone = "Cool-Neutral"
+        elif skin_level >= 8:  # Deep skin
+            if b > 8:
+                undertone = "Warm" if undertone != "Cool" else "Neutral"
+            elif a > 5 and b < 5:
+                undertone = "Cool"
+
+    # --- Step 3: Combine both eyes for reference ---
+    if left_eye_color == right_eye_color:
+        eye_color = left_eye_color
+    else:
+        eye_color = f"{left_eye_color} and {right_eye_color}"
+
+    # --- Step 4: Refine using eye + hair colors ---
+    eye_lower = eye_color.lower()
+    hair_lower = hair_color.lower()
+
+    # Eyes: blue/gray usually imply cool; hazel/green can mean neutral-warm
+    if any(x in eye_lower for x in ["blue", "gray", "cool"]):
+        if undertone.startswith("Warm") and b < 15:
+            undertone = "Cool-Neutral"
+        elif undertone == "Neutral":
+            undertone = "Cool-Neutral"
+    elif any(x in eye_lower for x in ["hazel", "light green", "green"]):
+        if undertone == "Cool":
+            undertone = "Neutral"
+    elif any(x in eye_lower for x in ["brown", "black"]):
+        pass  # not a strong undertone indicator
+
+    # Hair tone adjustments
+    if any(x in hair_lower for x in ["ash", "platinum", "gray", "silver"]):
+        if undertone.startswith("Warm"):
+            undertone = "Cool-Neutral"
+    elif any(x in hair_lower for x in ["red", "auburn", "copper", "strawberry"]):
+        if undertone.startswith("Cool"):
+            undertone = "Warm-Neutral"
+
+    print(f"Detected undertone: {undertone}")
+    print(f"Reasoning: L={L:.2f}, a={a:.2f}, b={b:.2f}, MST={skin_level}, Eyes={eye_color}, Hair={hair_color}")
+
+
+
 
     # Final concise result
     tone_info = mst_details.get(skin_level, {})

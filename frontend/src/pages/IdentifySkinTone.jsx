@@ -1,5 +1,4 @@
 
-// ================== actual working code
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/navbar";
@@ -11,19 +10,14 @@ const IdentifySkinTone = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const [aiResult, setAiResult] = useState(null);
+  
+  // ✅ NEW: Add loading state to prevent duplicate requests
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Monk Skin Tone HEX mapping
   const monk_hex = {
-    1: "#f7ede4",
-    2: "#f3e7da",
-    3: "#f6ead0",
-    4: "#ead9bb",
-    5: "#d7bd96",
-    6: "#9f7d54",
-    7: "#815d44",
-    8: "#604234",
-    9: "#3a312a",
-    10: "#2a2420"
+    1: "#f7ede4", 2: "#f3e7da", 3: "#f6ead0", 4: "#ead9bb", 5: "#d7bd96",
+    6: "#9f7d54", 7: "#815d44", 8: "#604234", 9: "#3a312a", 10: "#2a2420"
   };
 
   const sendImageToBackend = async (file) => {
@@ -75,6 +69,88 @@ const IdentifySkinTone = () => {
     setUploadStatus("");
   };
 
+  // ✅ NEW: Fixed function with duplicate prevention
+  // const handleGenerateReport = async () => {
+  //   // Prevent duplicate requests
+  //   if (isGenerating) {
+  //     console.log("⚠️ Already generating report, ignoring duplicate click");
+  //     return;
+  //   }
+
+  //   if (!aiResult) {
+  //     alert("No AI result available yet!");
+  //     return;
+  //   }
+
+  //   setIsGenerating(true);
+
+  //   try {
+  //     console.log("🚀 Starting report generation...");
+      
+  //     const response = await fetch("http://127.0.0.1:8000/api/generate-report/", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ ai_result: aiResult }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     const data = await response.json();
+  //     console.log("✅ Report generated successfully");
+  //     console.log("Fetched web pages:", data.results);
+      
+  //     data.report = data.summary; // alias
+  //     console.log("LLM Color Analysis Report:", data.report);
+
+  //     // Navigate to AnalyzeSkinTone page with aiResult
+  //     navigate("/analyze-skin-tone", { state: { apiPayload: aiResult } });
+      
+  //   } catch (err) {
+  //     console.error("❌ Error generating report:", err);
+  //     alert("Failed to generate report. Please try again.");
+  //   } finally {
+  //     // Reset loading state after 2 seconds to allow retry
+  //     setTimeout(() => {
+  //       setIsGenerating(false);
+  //     }, 2000);
+  //   }
+  // };
+  const handleGenerateReport = async () => {
+  if (isGenerating) return;
+  if (!aiResult) {
+    alert("No AI result available yet!");
+    return;
+  }
+
+  setIsGenerating(true);
+
+  try {
+    console.log("🚀 Starting report generation...");
+    const response = await fetch("http://127.0.0.1:8000/api/generate-report/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ai_result: aiResult }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+    console.log("✅ Report generated successfully", data);
+
+    // ✅ Pass the full backend response to AnalyzeSkinTone
+    navigate("/analyze-skin-tone", {
+      state: { apiPayload: aiResult, backendResponse: data },
+    });
+  } catch (err) {
+    console.error("❌ Error generating report:", err);
+    alert("Failed to generate report. Please try again.");
+  } finally {
+    setTimeout(() => setIsGenerating(false), 2000);
+  }
+};
+
   const imageVariants = {
     hidden: { opacity: 0, scale: 0.9, y: 30 },
     visible: (delay = 0) => ({
@@ -88,8 +164,8 @@ const IdentifySkinTone = () => {
 
   return (
     <div className="min-h-screen w-screen absolute left-0 top-0 overflow-x-hidden overflow-y-auto bg-[#F3E1CF] pb-10">
-
       <Navbar />
+      
       {/* Decorative Animated Images */}
       <div className="relative w-full max-w-3xl mx-auto h-[420px] top-20">
         <motion.img src="/color-analysis1.jpg" alt="Image 1"
@@ -192,13 +268,9 @@ const IdentifySkinTone = () => {
                         <p className="text-gray-700 font-poppins text-md mb-1">
                           <strong>Tone Group:</strong> {aiResult.tone_group}
                         </p>
-
-                        {/* UNDERTONE */}
                         <p className="text-gray-700 font-poppins text-md mb-2">
                           <strong>Undertone:</strong> {aiResult.undertone}
                         </p>
-
-                        {/* EYES & HAIR */}
                         <p className="text-gray-700 font-poppins text-md mb-1">
                           <strong>Eye Color:</strong> {Array.isArray(aiResult.eye_color) ? aiResult.eye_color.join(" and ") : aiResult.eye_color}
                         </p>
@@ -216,76 +288,38 @@ const IdentifySkinTone = () => {
                           ],
                         }}
                       ></div>
-
                     </div>
                     <p className="text-gray-600 italic font-poppins mt-2">
-                      This tone represents your skin’s undertone — use it to find colors that truly complement your look.
+                      This tone represents your skin's undertone — use it to find colors that truly complement your look.
                     </p>
                   </div>
                 )}
 
                 <div className="relative -top-72 -left-72">
-                  {/* <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gray-900 text-white rounded-lg px-6 py-3 font-abril text-xl hover:bg-[#CFA57E] transition-all"
-                  >
-                    Get your color palette
-                  </motion.button> */}
-                  {/* <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gray-900 text-white rounded-lg px-6 py-3 font-abril text-xl hover:bg-[#CFA57E] transition-all"
-                    onClick={async () => {
-                      if (!aiResult) return alert("No AI result available yet!");
-                      try {
-                        const response = await fetch("http://127.0.0.1:8000/api/generate-report/", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ ai_result: aiResult }),
-                        });
-                        const data = await response.json();
-                        console.log("LLM Color Analysis Report:", data.report);
-                        alert("Check console for generated color analysis report!");
-                      } catch (err) {
-                        console.error("Error generating report:", err);
-                      }
-                    }}
-                  >
-                    Get your color palette
-                  </motion.button> */}
+                  {/* ✅ FIXED: Button with loading state */}
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gray-900 text-white rounded-lg px-6 py-3 font-abril text-xl hover:bg-[#CFA57E] transition-all"
-                    onClick={async () => {
-                      if (!aiResult) return alert("No AI result available yet!");
-
-                      try {
-                        // Call backend to generate report
-                        const response = await fetch("http://127.0.0.1:8000/api/generate-report/", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ ai_result: aiResult }),
-                        });
-                        const data = await response.json();
-                        console.log("Fetched web pages:", data.results);
-                        data.report = data.summary;  // alias
-                        console.log("LLM Color Analysis Report:", data.report);
-
-
-                        // Navigate to AnalyzeSkinTone page with aiResult
-                        navigate("/analyze-skin-tone", { state: { apiPayload: aiResult } });
-                      } catch (err) {
-                        console.error("Error generating report:", err);
-                        alert("Failed to generate report. Please try again.");
-                      }
-                    }}
+                    whileHover={!isGenerating ? { scale: 1.05 } : {}}
+                    whileTap={!isGenerating ? { scale: 0.95 } : {}}
+                    className={`rounded-lg px-6 py-3 font-abril text-xl transition-all ${
+                      isGenerating
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-gray-900 text-white hover:bg-[#CFA57E]"
+                    }`}
+                    onClick={handleGenerateReport}
+                    disabled={isGenerating}
                   >
-                    Get your color palette
+                    {isGenerating ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Generating...
+                      </span>
+                    ) : (
+                      "Get your color palette"
+                    )}
                   </motion.button>
-
-
                 </div>
               </motion.div>
             )}
