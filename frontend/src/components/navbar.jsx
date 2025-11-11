@@ -1,351 +1,375 @@
-// import React, { useState } from 'react';
-// import { Link, useLocation } from 'react-router-dom';
+// import React, { useState } from "react";
+// import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // const Navbar = ({ onAboutClick }) => {
-//     const [isMenuOpen, setIsMenuOpen] = useState(false);
-//     const location = useLocation();
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
+//   const location = useLocation();
+//   const navigate = useNavigate();
 
-//     const isActive = (path) => location.pathname === path;
+//   const token = localStorage.getItem("token");
+//   const userEmail = localStorage.getItem("userEmail");
 
-//     return (
-//         <nav className="fixed top-0 p-4 left-0 w-full bg-[#E5C19F]/50 shadow-lg z-50 backdrop-blur-md border-black/50 border-b-[5px]">
-//             <div className="w-full px-6">
-//                 <div className="flex justify-between items-center h-16">
-//                     {/* Left - Brand Name */}
-//                     <div className="flex-shrink-0">
-//                         <Link to="/" className="text-3xl ml-10 font-abril font-bold text-gray-800 hover:text-gray-600">
-//                             Coloryze
-//                         </Link>
-//                     </div>
+//   const isActive = (path) => location.pathname === path;
 
-//                     {/* Center - Navigation Links (Desktop) */}
-//                     <div className="hidden md:block">
-//                         <div className="ml-10 flex items-baseline space-x-8">
-//                             <Link
-//                                 to="/"
-//                                 className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${isActive('/') ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'
-//                                     }`}
-//                             >
-//                                 Home
-//                             </Link>
-//                             {/* <Link
-//                                 to="/about"
-//                                 className={`px-3 py-2 text-lg font-poppins font-semibold  transition duration-300 ${isActive('/about') ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'
-//                                     }`}
-//                             >
-//                                 About
-//                             </Link> */}
-//                             <Link
-//   to="#"
-//   onClick={(e) => {
+//   const handleAboutClick = (e) => {
 //     e.preventDefault();
 //     if (onAboutClick) onAboutClick();
-//   }}
-//   className="px-3 py-2 text-lg font-poppins font-semibold transition duration-300 text-gray-700 hover:text-gray-900"
-// >
-//   About
-// </Link>
+//     setIsMenuOpen(false);
+//   };
 
-//                             <Link
-//                                 to="/analyze-skin-tone"
-//                                 className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${isActive('/analyze-skin-tone') ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'
-//                                     }`}
-//                             >
-//                                 Analyze Skin Tone
-//                             </Link>
-//                             <Link
-//                                 to="/outfit-recommendation"
-//                                 className={`px-3 py-2 text-lg font-poppins font-semibold  transition duration-300 ${isActive('/outfit-recommendation') ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'
-//                                     }`}
-//                             >
-//                                 Outfit Recommendation
-//                             </Link>
-//                             <Link
-//                                 to="/identify-skin-tone"
-//                                 className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${isActive('/identify-skin-tone') ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'
-//                                     }`}
-//                             >
-//                                 Identify Skin Tone
-//                             </Link>
-//                         </div>
-//                     </div>
+//   const handleLogout = () => {
+//     localStorage.removeItem("token");
+//     localStorage.removeItem("userEmail");
+//     navigate("/login");
+//   };
 
-//                     {/* Right - Login Button (Desktop) */}
-//                     <div className="hidden md:block">
-//                         <Link
-//                             to="/login"
-//                             className="bg-gray-800 text-white px-6 py-2 mr-10 rounded-md text-lg font-poppins font-semibold  hover:bg-gray-700 transition duration-300"
-//                         >
-//                             Login
-//                         </Link>
-//                     </div>
+//   return (
+//     <nav className="fixed top-0 w-full bg-[#E5C19F]/50 shadow-lg z-50 backdrop-blur-md border-b border-black/50 p-4">
+//       <div className="flex justify-between items-center">
+//         <Link to="/" className="text-3xl font-bold text-gray-800 hover:text-gray-600">
+//           Coloryze
+//         </Link>
 
-//                     {/* Mobile menu button */}
-//                     <div className="md:hidden">
-//                         <button
-//                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-//                             className="text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 p-2"
-//                         >
-//                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-//                             </svg>
-//                         </button>
-//                     </div>
-//                 </div>
-//             </div>
+//         {/* Desktop Menu */}
+//         <div className="hidden md:flex items-center space-x-6">
+//           <Link
+//             to="/"
+//             className={`px-3 py-2 font-semibold ${isActive("/") ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-700 hover:text-gray-900"}`}
+//           >
+//             Home
+//           </Link>
 
-//             {/* Mobile Menu */}
-//             {isMenuOpen && (
-//                 <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t">
-//                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-//                         <Link
-//                             to="/"
-//                             className={`block px-3 py-2 text-base font-medium border-b ${isActive('/') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 hover:text-gray-900'
-//                                 }`}
-//                             onClick={() => setIsMenuOpen(false)}
-//                         >
-//                             Home
-//                         </Link>
-//                         <Link
-//                             to="/about"
-//                             className={`block px-3 py-2 text-base font-medium border-b ${isActive('/about') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 hover:text-gray-900'
-//                                 }`}
-//                             onClick={() => setIsMenuOpen(false)}
-//                         >
-//                             About
-//                         </Link>
-//                         <Link
-//                             to="/analyze-skin-tone"
-//                             className={`block px-3 py-2 text-base font-medium border-b ${isActive('/analyze-skin-tone') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 hover:text-gray-900'
-//                                 }`}
-//                             onClick={() => setIsMenuOpen(false)}
-//                         >
-//                             Analyze Skin Tone
-//                         </Link>
-//                         <Link
-//                             to="/outfit-recommendation"
-//                             className={`block px-3 py-2 text-base font-medium border-b ${isActive('/outfit-recommendation') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 hover:text-gray-900'
-//                                 }`}
-//                             onClick={() => setIsMenuOpen(false)}
-//                         >
-//                             Outfit Recommendation
-//                         </Link>
-//                         <Link
-//                             to="/identify-skin-tone"
-//                             className={`block px-3 py-2 text-base font-medium border-b ${isActive('/identify-skin-tone') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 hover:text-gray-900'
-//                                 }`}
-//                             onClick={() => setIsMenuOpen(false)}
-//                         >
-//                             Identify Skin Tone
-//                         </Link>
-//                         <div className="px-3 py-4 border-t">
-//                             <Link
-//                                 to="/login"
-//                                 className="w-full bg-gray-800 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-gray-700 transition duration-300 block text-center"
-//                                 onClick={() => setIsMenuOpen(false)}
-//                             >
-//                                 Login
-//                             </Link>
-//                         </div>
-//                     </div>
-//                 </div>
+//           <a
+//             href="#about"
+//             onClick={handleAboutClick}
+//             className="px-3 py-2 font-semibold text-gray-700 hover:text-gray-900"
+//           >
+//             About
+//           </a>
+
+//           {token && (
+//             <>
+//               <Link
+//                 to="/analyze-skin-tone"
+//                 className={`px-3 py-2 font-semibold ${isActive("/analyze-skin-tone") ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-700 hover:text-gray-900"}`}
+//               >
+//                 Analyze Skin Tone
+//               </Link>
+//               <Link
+//                 to="/outfit-recommendation"
+//                 className={`px-3 py-2 font-semibold ${isActive("/outfit-recommendation") ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-700 hover:text-gray-900"}`}
+//               >
+//                 Outfit Recommendation
+//               </Link>
+//             </>
+//           )}
+
+//           <Link
+//             to="/identify-skin-tone"
+//             className={`px-3 py-2 font-semibold ${isActive("/identify-skin-tone") ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-700 hover:text-gray-900"}`}
+//           >
+//             Identify Skin Tone
+//           </Link>
+
+//           {/* Auth Buttons */}
+//           {token ? (
+//             <>
+//               <span className="text-gray-800 font-semibold">{userEmail}</span>
+//               <button
+//                 onClick={handleLogout}
+//                 className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 transition duration-300"
+//               >
+//                 Logout
+//               </button>
+//             </>
+//           ) : (
+//             <>
+//               <Link
+//                 to="/login"
+//                 className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-300"
+//               >
+//                 Login
+//               </Link>
+//               <Link
+//                 to="/signup"
+//                 className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-400 transition duration-300"
+//               >
+//                 Sign Up
+//               </Link>
+//             </>
+//           )}
+//         </div>
+
+//         {/* Mobile Menu Button */}
+//         <div className="md:hidden">
+//           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-700 p-2">
+//             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+//             </svg>
+//           </button>
+//         </div>
+//       </div>
+
+//       {/* Mobile Menu */}
+//       {isMenuOpen && (
+//         <div className="md:hidden mt-2 bg-white shadow-lg border-t">
+//           <div className="flex flex-col px-4 py-3 space-y-2">
+//             <Link to="/" onClick={() => setIsMenuOpen(false)} className="py-2 font-medium text-gray-700 hover:text-gray-900">Home</Link>
+//             <a href="#about" onClick={handleAboutClick} className="py-2 font-medium text-gray-700 hover:text-gray-900">About</a>
+//             {token && (
+//               <>
+//                 <Link to="/analyze-skin-tone" onClick={() => setIsMenuOpen(false)} className="py-2 font-medium text-gray-700 hover:text-gray-900">Analyze Skin Tone</Link>
+//                 <Link to="/outfit-recommendation" onClick={() => setIsMenuOpen(false)} className="py-2 font-medium text-gray-700 hover:text-gray-900">Outfit Recommendation</Link>
+//               </>
 //             )}
-//         </nav>
-//     );
+//             <Link to="/identify-skin-tone" onClick={() => setIsMenuOpen(false)} className="py-2 font-medium text-gray-700 hover:text-gray-900">Identify Skin Tone</Link>
+
+//             {/* Auth Buttons */}
+//             {token ? (
+//               <>
+//                 <span className="py-2 font-medium text-gray-800">{userEmail}</span>
+//                 <button
+//                   onClick={handleLogout}
+//                   className="w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 transition duration-300"
+//                 >
+//                   Logout
+//                 </button>
+//               </>
+//             ) : (
+//               <>
+//                 <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full bg-gray-800 text-white py-2 rounded-md text-center hover:bg-gray-700 transition duration-300">
+//                   Login
+//                 </Link>
+//                 <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="w-full bg-gray-500 text-white py-2 rounded-md text-center hover:bg-gray-400 transition duration-300">
+//                   Sign Up
+//                 </Link>
+//               </>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </nav>
+//   );
 // };
 
 // export default Navbar;
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = ({ onAboutClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const userEmail = localStorage.getItem("userEmail");
 
   const isActive = (path) => location.pathname === path;
 
   const handleAboutClick = (e) => {
     e.preventDefault();
     if (onAboutClick) onAboutClick();
-    setIsMenuOpen(false); // close mobile menu if open
+    setIsMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    navigate("/login");
   };
 
   return (
-    <nav className="fixed top-0 p-4 left-0 w-full bg-[#E5C19F]/50 shadow-lg z-50 backdrop-blur-md border-black/50 border-b-[5px]">
-      <div className="w-full px-6">
-        <div className="flex justify-between items-center h-16">
-          {/* Brand */}
-          <div className="flex-shrink-0">
-            <Link
-              to="/"
-              className="text-3xl ml-10 font-abril font-bold text-gray-800 hover:text-gray-600"
-            >
-              Coloryze
-            </Link>
-          </div>
+    <nav className="fixed top-0 w-full bg-white/30 backdrop-blur-xl border-b border-white/40 shadow-md z-50 p-4 transition-colors duration-300">
+      <div className="flex justify-between items-center">
+        <Link
+          to="/"
+          className="text-3xl ml-10 font-bold text-gray-900 hover:text-gray-700 transition"
+        >
+          Coloryze
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <Link
-                to="/"
-                className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${
-                  isActive("/")
-                    ? "text-gray-900 border-b-2 border-gray-900"
-                    : "text-gray-700 hover:text-gray-900"
-                }`}
-              >
-                Home
-              </Link>
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center space-x-6">
+          <Link
+            to="/"
+            className={`px-3 py-2 font-semibold ${
+              isActive("/")
+                ? "text-gray-900 border-b-2 border-[#9b6ef3]"
+                : "text-gray-700 hover:text-gray-900"
+            } transition`}
+          >
+            Home
+          </Link>
 
-              {/* ✅ Smooth scroll About */}
-              <a
-                href="#about"
-                onClick={handleAboutClick}
-                className="px-3 py-2 text-lg font-poppins font-semibold transition duration-300 text-gray-700 hover:text-gray-900"
-              >
-                About
-              </a>
+          <a
+            href="#about"
+            onClick={handleAboutClick}
+            className="px-3 py-2 font-semibold text-gray-700 hover:text-gray-900 transition"
+          >
+            About
+          </a>
 
+          {token && (
+            <>
               <Link
                 to="/analyze-skin-tone"
-                className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${
+                className={`px-3 py-2 font-semibold ${
                   isActive("/analyze-skin-tone")
-                    ? "text-gray-900 border-b-2 border-gray-900"
+                    ? "text-gray-900 border-b-2 border-[#9b6ef3]"
                     : "text-gray-700 hover:text-gray-900"
-                }`}
+                } transition`}
               >
                 Analyze Skin Tone
               </Link>
-
               <Link
                 to="/outfit-recommendation"
-                className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${
+                className={`px-3 py-2 font-semibold ${
                   isActive("/outfit-recommendation")
-                    ? "text-gray-900 border-b-2 border-gray-900"
+                    ? "text-gray-900 border-b-2 border-[#9b6ef3]"
                     : "text-gray-700 hover:text-gray-900"
-                }`}
+                } transition`}
               >
                 Outfit Recommendation
               </Link>
+            </>
+          )}
 
+          <Link
+            to="/identify-skin-tone"
+            className={`px-3 py-2 font-semibold ${
+              isActive("/identify-skin-tone")
+                ? "text-gray-900 border-b-2 border-[#9b6ef3]"
+                : "text-gray-700 hover:text-gray-900"
+            } transition`}
+          >
+            Identify Skin Tone
+          </Link>
+
+          {/* Auth Buttons */}
+          {token ? (
+            <>
+              <span className="text-gray-900 font-semibold">{userEmail}</span>
+              <button
+                onClick={handleLogout}
+                className="bg-gradient-to-r from-[#b388ff] to-[#81d4fa] text-white px-4 py-2 rounded-full hover:scale-105 transition transform shadow-md"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
               <Link
-                to="/identify-skin-tone"
-                className={`px-3 py-2 text-lg font-poppins font-semibold transition duration-300 ${
-                  isActive("/identify-skin-tone")
-                    ? "text-gray-900 border-b-2 border-gray-900"
-                    : "text-gray-700 hover:text-gray-900"
-                }`}
+                to="/login"
+                className="bg-gradient-to-r from-[#b388ff] to-[#81d4fa] text-white px-4 py-2 rounded-full hover:scale-105 transition transform shadow-md"
               >
-                Identify Skin Tone
+                Login
               </Link>
-            </div>
-          </div>
-
-          {/* Login Button (Desktop) */}
-          <div className="hidden md:block">
-            <Link
-              to="/login"
-              className="bg-gray-800 text-white px-6 py-2 mr-10 rounded-md text-lg font-poppins font-semibold hover:bg-gray-700 transition duration-300"
-            >
-              Login
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 p-2"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <Link
+                to="/signup"
+                className="bg-gradient-to-r from-[#f48fb1] to-[#ffe082] text-white px-4 py-2 rounded-full hover:scale-105 transition transform shadow-md"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-          </div>
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-gray-900 p-2 hover:text-gray-700 transition"
+          >
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* ✅ Mobile Menu */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="md:hidden mt-2 bg-white/30 backdrop-blur-xl border-t border-white/40 shadow-md rounded-b-lg">
+          <div className="flex flex-col px-4 py-3 space-y-2">
             <Link
               to="/"
-              className={`block px-3 py-2 text-base font-medium border-b ${
-                isActive("/")
-                  ? "text-gray-900 bg-gray-50"
-                  : "text-gray-700 hover:text-gray-900"
-              }`}
               onClick={() => setIsMenuOpen(false)}
+              className="py-2 font-medium text-gray-700 hover:text-gray-900 transition"
             >
               Home
             </Link>
-
-            {/* ✅ Smooth scroll About in mobile too */}
             <a
               href="#about"
               onClick={handleAboutClick}
-              className="block px-3 py-2 text-base font-medium border-b text-gray-700 hover:text-gray-900"
+              className="py-2 font-medium text-gray-700 hover:text-gray-900 transition"
             >
               About
             </a>
-
-            <Link
-              to="/analyze-skin-tone"
-              className={`block px-3 py-2 text-base font-medium border-b ${
-                isActive("/analyze-skin-tone")
-                  ? "text-gray-900 bg-gray-50"
-                  : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Analyze Skin Tone
-            </Link>
-
-            <Link
-              to="/outfit-recommendation"
-              className={`block px-3 py-2 text-base font-medium border-b ${
-                isActive("/outfit-recommendation")
-                  ? "text-gray-900 bg-gray-50"
-                  : "text-gray-700 hover:text-gray-900"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Outfit Recommendation
-            </Link>
-
+            {token && (
+              <>
+                <Link
+                  to="/analyze-skin-tone"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="py-2 font-medium text-gray-700 hover:text-gray-900 transition"
+                >
+                  Analyze Skin Tone
+                </Link>
+                <Link
+                  to="/outfit-recommendation"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="py-2 font-medium text-gray-700 hover:text-gray-900 transition"
+                >
+                  Outfit Recommendation
+                </Link>
+              </>
+            )}
             <Link
               to="/identify-skin-tone"
-              className={`block px-3 py-2 text-base font-medium border-b ${
-                isActive("/identify-skin-tone")
-                  ? "text-gray-900 bg-gray-50"
-                  : "text-gray-700 hover:text-gray-900"
-              }`}
               onClick={() => setIsMenuOpen(false)}
+              className="py-2 font-medium text-gray-700 hover:text-gray-900 transition"
             >
               Identify Skin Tone
             </Link>
 
-            <div className="px-3 py-4 border-t">
-              <Link
-                to="/login"
-                className="w-full bg-gray-800 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-gray-700 transition duration-300 block text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
-            </div>
+            {/* Auth Buttons */}
+            {token ? (
+              <>
+                <span className="py-2 font-medium text-gray-900">{userEmail}</span>
+                <button
+                  onClick={handleLogout}
+                  className="w-full bg-gradient-to-r from-[#b388ff] to-[#81d4fa] text-white py-2 rounded-full hover:scale-105 transition transform shadow-md"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full bg-gradient-to-r from-[#b388ff] to-[#81d4fa] text-white py-2 rounded-full text-center hover:scale-105 transition transform shadow-md"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full bg-gradient-to-r from-[#f48fb1] to-[#ffe082] text-white py-2 rounded-full text-center hover:scale-105 transition transform shadow-md"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -10,26 +10,32 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import image_routes, llm_routes
 from app.middleware.logger import LoggingMiddleware
 from app.routes import garment_routes
-
+from app.routes import agentic_workflow_routes
+from app.routes import auth_routes
 app = FastAPI(title="Coloryze Backend", version="1.0")
 
 # --- Allow frontend (Vite React) ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # React local dev
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],  # React local dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Custom Logging Middleware ---
+# --- Custom Logging Middleware --
 app.add_middleware(LoggingMiddleware)
 
 # --- Register Routes ---
 app.include_router(image_routes.router, prefix="/api")
 app.include_router(llm_routes.router, prefix="/api")
 app.include_router(garment_routes.router, prefix="/api")
-
+# app.include_router(agentic_workflow_routes.router,prefix="/api")
+app.include_router(agentic_workflow_routes.router, prefix="/api")
+app.include_router(auth_routes.router, prefix="/auth", tags=["Auth"])
 @app.get("/")
 def root():
     return {"message": "Coloryze Backend is Running"}
