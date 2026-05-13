@@ -1,10 +1,3 @@
-# from fastapi import FastAPI
-# from app.routes import upload  # import the routes module
-
-# app = FastAPI(title="Coloryze Backend")
-
-# # include the routes
-# app.include_router(upload.router)
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import image_routes, llm_routes
